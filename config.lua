@@ -14,6 +14,8 @@ lvim.colorscheme = "onedark"
 lvim.format_on_save = true
 lvim.transparent_window = true
 vim.opt.relativenumber = true
+lvim.builtin.dap.active = true
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -169,17 +171,27 @@ lvim.lsp.installer.setup.ensure_installed = {
 --     filetypes = { "javascript", "python" },
 --   },
 -- }
+local dap = require('dap')
+dap.adapters.cppdbg = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = '/home/turutupa/.config/vscode-cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+}
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
 local formatters = require("lvim.lsp.null-ls.formatters")
 formatters.setup({
   { command = "rustfmt", filetypes = { "rust" } },
 })
 
 lvim.plugins = {
-  { "folke/trouble.nvim", cmd = "TroubleToggle", },
+  { "folke/trouble.nvim",
+    cmd = "TroubleToggle",
+  },
   { "Mofiqul/dracula.nvim" },
   { "arcticicestudio/nord-vim" },
   { "folke/lsp-colors.nvim" },
-  -- { 'morhetz/gruvbox' },
   { 'marko-cerovac/material.nvim' },
   { 'fatih/vim-go' },
   { 'artanikin/vim-synthwave84' },
@@ -189,6 +201,7 @@ lvim.plugins = {
   { 'rose-pine/neovim' },
   { 'safv12/andromeda.vim' },
   { 'nyoom-engineering/oxocarbon.nvim' },
+  { 'arzg/vim-colors-xcode' },
   { "ellisonleao/gruvbox.nvim",
     require("gruvbox").setup({
       undercurl = true,
@@ -225,7 +238,7 @@ lvim.plugins = {
       -- Options are italic, bold, underline, none
       -- You can configure multiple style with comma seperated, For e.g., keywords = 'italic,bold'
       code_style = {
-        comments = 'italic',
+        comments = 'none',
         keywords = 'none',
         functions = 'none',
         strings = 'none',
@@ -234,7 +247,7 @@ lvim.plugins = {
 
       -- Lualine options --
       lualine = {
-        transparent = false, -- lualine center bar transparency
+        transparent = true, -- lualine center bar transparency
       },
 
       -- Custom Highlights --
@@ -250,30 +263,66 @@ lvim.plugins = {
     }
   },
   {
+    "kevinhwang91/nvim-bqf",
+    event = { "BufRead", "BufNew" },
+    config = function()
+      require("bqf").setup({
+        auto_enable = true,
+        preview = {
+          win_height = 12,
+          win_vheight = 12,
+          delay_syntax = 80,
+          border_chars = { "┃", "┃", "━", "━", "┏", "┓", "┗", "┛", "█" },
+        },
+        func_map = {
+          ptogglemode = "z,",
+          stoggleup = "",
+          vsplit = "<C-v>"
+        },
+        filter = {
+          fzf = {
+            action_for = { ["ctrl-s"] = "split" },
+            extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
+          },
+        },
+      })
+    end,
+  },
+  {
     "rmagatti/goto-preview",
     config = function()
       require('goto-preview').setup {
-        width = 150; -- Width of the floating window
-        height = 30; -- Height of the floating window
-        default_mappings = true; -- Bind default mappings
+        width = 80; -- Width of the floating window
+        height = 20; -- Height of the floating window
+        default_mappings = false; -- Bind default mappings
         debug = false; -- Print debug information
         opacity = 0; -- 0-100 opacity level of the floating window where 100 is fully transparent.
         post_open_hook = nil; -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        resizing_mappings = true; -- Binds arrow keys to resizing the floating window.
         -- You can use "default_mappings = true" setup option
         -- Or explicitly set keybindings
-        -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
-        -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
-        -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
+        vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>");
+        vim.cmd("nnoremap gpt <cmd>lua require('goto-preview').goto_preview_type_definition()<CR>");
+        vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>");
+        vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>");
+        vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>");
       }
     end
   },
   { "npxbr/glow.nvim", ft = { "markdown" } },
-  { 'rmehri01/onenord.nvim' },
-  { 'projekt0n/github-nvim-theme' },
-  { 'Rigellute/shades-of-purple.vim' },
   { 'bluz71/vim-nightfly-colors' },
   { 'haishanh/night-owl.vim' },
-  { 'svrana/neosolarized.nvim' },
+  { 'nacro90/numb.nvim',
+    config = function()
+      require('numb').setup {
+        show_numbers = true, -- Enable 'number' for the window while peeking
+        show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+        hide_relativenumbers = true, -- Enable turning off 'relativenumber' for the window while peeking
+        number_only = true, -- Peek only when the command is only a number instead of when it starts with a number
+        centered_peeking = true, -- Peeked line will be centered relative to window
+      }
+    end
+  },
   {
     "simrat39/rust-tools.nvim",
     config = function()
