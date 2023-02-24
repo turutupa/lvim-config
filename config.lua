@@ -49,6 +49,8 @@ lvim.builtin.telescope.defaults.mappings = {
   n = {
     ["<C-j>"] = actions.move_selection_next,
     ["<C-k>"] = actions.move_selection_previous,
+    ["<C-n>"] = actions.cycle_history_next,
+    ["<C-p>"] = actions.cycle_history_prev,
   },
 }
 
@@ -202,25 +204,26 @@ lvim.plugins = {
   { 'safv12/andromeda.vim' },
   { 'nyoom-engineering/oxocarbon.nvim' },
   { 'arzg/vim-colors-xcode' },
-  { "ellisonleao/gruvbox.nvim",
-    require("gruvbox").setup({
-      undercurl = true,
-      underline = true,
-      bold = true,
-      italic = true,
-      strikethrough = true,
-      invert_selection = false,
-      invert_signs = false,
-      invert_tabline = false,
-      invert_intend_guides = false,
-      inverse = true, -- invert background for search, diffs, statuslines and errors
-      contrast = "hard", -- can be "hard", "soft" or empty string
-      palette_overrides = {},
-      overrides = {},
-      dim_inactive = false,
-      transparent_mode = false,
-    })
-  },
+  { 'kartikp10/noctis.nvim' },
+  -- { "ellisonleao/gruvbox.nvim",
+  --   require("gruvbox").setup({
+  --     undercurl = true,
+  --     underline = true,
+  --     bold = true,
+  --     italic = true,
+  --     strikethrough = true,
+  --     invert_selection = false,
+  --     invert_signs = false,
+  --     invert_tabline = false,
+  --     invert_intend_guides = false,
+  --     inverse = true, -- invert background for search, diffs, statuslines and errors
+  --     contrast = "hard", -- can be "hard", "soft" or empty string
+  --     palette_overrides = {},
+  --     overrides = {},
+  --     dim_inactive = false,
+  --     transparent_mode = false,
+  --   })
+  -- },
   { 'navarasu/onedark.nvim',
     require('onedark').setup {
       -- Main options --
@@ -292,24 +295,24 @@ lvim.plugins = {
     "rmagatti/goto-preview",
     config = function()
       require('goto-preview').setup {
-        width = 80; -- Width of the floating window
-        height = 20; -- Height of the floating window
-        default_mappings = false; -- Bind default mappings
-        debug = false; -- Print debug information
-        opacity = 0; -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        post_open_hook = nil; -- A function taking two arguments, a buffer and a window to be ran as a hook.
-        resizing_mappings = true; -- Binds arrow keys to resizing the floating window.
+        width = 80, -- Width of the floating window
+        height = 20, -- Height of the floating window
+        default_mappings = false, -- Bind default mappings
+        debug = false, -- Print debug information
+        opacity = 0, -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        resizing_mappings = true, -- Binds arrow keys to resizing the floating window.
         -- You can use "default_mappings = true" setup option
         -- Or explicitly set keybindings
-        vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>");
-        vim.cmd("nnoremap gpt <cmd>lua require('goto-preview').goto_preview_type_definition()<CR>");
-        vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>");
-        vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>");
-        vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>");
+        vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>"),
+        vim.cmd("nnoremap gpt <cmd>lua require('goto-preview').goto_preview_type_definition()<CR>"),
+        vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>"),
+        vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>"),
+        vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>"),
       }
     end
   },
-  { "npxbr/glow.nvim", ft = { "markdown" } },
+  { "npxbr/glow.nvim",           ft = { "markdown" } },
   { 'bluz71/vim-nightfly-colors' },
   { 'haishanh/night-owl.vim' },
   { 'nacro90/numb.nvim',
@@ -371,6 +374,47 @@ lvim.plugins = {
     end,
     ft = { "rust", "rs" },
   },
+  {
+    "stevearc/dressing.nvim"
+  },
+  {
+    "folke/noice.nvim",
+    config = function()
+      require("noice").setup({
+        -- add any options here
+        lsp = {
+          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+          -- override = {
+          --   ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          --   ["vim.lsp.util.stylize_markdown"] = true,
+          --   ["cmp.entry.get_documentation"] = true,
+          -- },
+          signature = {
+            enabled = false,
+          },
+          hover = {
+            enabled = false
+          }
+        },
+        -- you can enable a preset for easier configuration
+        presets = {
+          bottom_search = true, -- use a classic bottom cmdline for search
+          command_palette = false, -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          inc_rename = false, -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = false, -- add a border to hover docs and signature help
+        },
+      })
+    end,
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      -- "rcarriga/nvim-notify",
+    }
+  }
   -- { 'karb94/neoscroll.nvim',
   --   config = function()
   --     require('neoscroll').setup({
