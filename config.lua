@@ -10,9 +10,9 @@ an executable
 
 -- general
 lvim.log.level = "warn"
-lvim.colorscheme = "onedark"
+lvim.colorscheme = "kanagawa"
 lvim.format_on_save = true
-lvim.transparent_window = true
+lvim.transparent_window = false
 vim.opt.relativenumber = true
 lvim.builtin.dap.active = true
 
@@ -29,10 +29,30 @@ lvim.keys.normal_mode["<S-M-l>"] = ":BufferLineMoveNext<CR>"
 lvim.keys.normal_mode["<S-M-h>"] = ":BufferLineMovePrev<CR>"
 lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
 lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
+
+-- noice
+lvim.keys.normal_mode["<S-Enter>"] = ":"
+--  { desc = "Redirect Cmdline" })
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
 -- override a default keymapping
 -- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
+
+-- vim.g.copilot_no_tab_map = true
+-- vim.g.copilot_assume_mapped = true
+-- vim.g.copilot_tab_fallback = ""
+-- local cmp = require "cmp"
+
+-- lvim.builtin.cmp.mapping["<C-e>"] = function(fallback)
+--   cmp.mapping.abort()
+--   local copilot_keys = vim.fn["copilot#Accept"]()
+--   if copilot_keys ~= "" then
+--     vim.api.nvim_feedkeys(copilot_keys, "i", true)
+--   else
+--     fallback()
+--   end
+-- end
+
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
@@ -173,22 +193,63 @@ lvim.lsp.installer.setup.ensure_installed = {
 --     filetypes = { "javascript", "python" },
 --   },
 -- }
-local dap = require('dap')
-dap.adapters.cppdbg = {
-  id = 'cppdbg',
-  type = 'executable',
-  command = '/home/turutupa/.config/vscode-cpptools/extension/debugAdapters/bin/OpenDebugAD7',
-}
-dap.configurations.c = dap.configurations.cpp
-dap.configurations.rust = dap.configurations.cpp
+-- local dap = require('dap')
+-- dap.adapters.cppdbg = {
+--   id = 'cppdbg',
+--   type = 'executable',
+--   command = '/home/turutupa/.config/vscode-cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+-- }
+-- dap.configurations.c = dap.configurations.cpp
+-- dap.configurations.rust = dap.configurations.cpp
 
 local formatters = require("lvim.lsp.null-ls.formatters")
 formatters.setup({
   { command = "rustfmt", filetypes = { "rust" } },
 })
 
+lvim.builtin.sell_soul_to_devel = true
+
 lvim.plugins = {
-  { "folke/trouble.nvim",
+  { 'junegunn/goyo.vim' },
+  { 'martinsione/darkplus.nvim' },
+  { 'github/copilot.vim' },
+  { 'Mofiqul/vscode.nvim' },
+  { 'luisiacc/gruvbox-baby' },
+  { "rebelot/kanagawa.nvim", require('kanagawa').setup({
+    transparent = false,
+
+    overrides = function(colors)
+      local theme = colors.theme
+      return {
+        TelescopeTitle = { fg = theme.ui.special, bold = true },
+        TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+        TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+        TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+        TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+        TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+        TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+      }
+    end,
+  }) },
+  -- {
+  --   "gelfand/copilot.vim",
+  --   disable = not lvim.builtin.sell_soul_to_devel,
+  --   config = function()
+  --     -- copilot assume mapped
+  --     vim.g.copilot_assume_mapped = true
+  --     vim.g.copilot_no_tab_map = true
+  --   end
+  -- },
+  -- {
+  --   "hrsh7th/cmp-copilot",
+  --   disable = not lvim.builtin.sell_soul_to_devel,
+  --   config = function()
+  --     lvim.builtin.cmp.formatting.source_names["copilot"] = "(Cop)"
+  --     table.insert(lvim.builtin.cmp.sources, { name = "copilot" })
+  --   end
+  -- },
+  {
+    "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
   { "Mofiqul/dracula.nvim" },
@@ -200,41 +261,45 @@ lvim.plugins = {
   { 'catppuccin/nvim' },
   { 'Yazeed1s/oh-lucy.nvim' },
   { 'ghifarit53/daycula-vim' },
-  { 'rose-pine/neovim' },
+  { 'rose-pine/neovim', require('rose-pine').setup({
+    disable_italics = true,
+    disable_background = false,
+  })
+  },
   { 'safv12/andromeda.vim' },
   { 'nyoom-engineering/oxocarbon.nvim' },
   { 'arzg/vim-colors-xcode' },
   { 'kartikp10/noctis.nvim' },
-  -- { "ellisonleao/gruvbox.nvim",
-  --   require("gruvbox").setup({
-  --     undercurl = true,
-  --     underline = true,
-  --     bold = true,
-  --     italic = true,
-  --     strikethrough = true,
-  --     invert_selection = false,
-  --     invert_signs = false,
-  --     invert_tabline = false,
-  --     invert_intend_guides = false,
-  --     inverse = true, -- invert background for search, diffs, statuslines and errors
-  --     contrast = "hard", -- can be "hard", "soft" or empty string
-  --     palette_overrides = {},
-  --     overrides = {},
-  --     dim_inactive = false,
-  --     transparent_mode = false,
-  --   })
-  -- },
+  { "ellisonleao/gruvbox.nvim",
+    require("gruvbox").setup({
+      undercurl = true,
+      underline = true,
+      bold = true,
+      italic = true,
+      strikethrough = true,
+      invert_selection = false,
+      invert_signs = false,
+      invert_tabline = false,
+      invert_intend_guides = false,
+      inverse = true,    -- invert background for search, diffs, statuslines and errors
+      contrast = "hard", -- can be "hard", "soft" or empty string
+      palette_overrides = {},
+      overrides = {},
+      dim_inactive = false,
+      transparent_mode = false,
+    })
+  },
   { 'navarasu/onedark.nvim',
     require('onedark').setup {
       -- Main options --
-      style = 'deep', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      transparent = true, -- Show/hide background
-      term_colors = false, -- Change terminal color as per the selected theme style
-      ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
+      style = 'deep',               -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+      transparent = false,          -- Show/hide background
+      term_colors = false,          -- Change terminal color as per the selected theme style
+      ending_tildes = false,        -- Show the end-of-buffer tildes. By default they are hidden
       cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
 
       -- toggle theme style ---
-      toggle_style_key = nil, -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+      toggle_style_key = nil,                                                              -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
       toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
 
       -- Change code style ---
@@ -254,13 +319,13 @@ lvim.plugins = {
       },
 
       -- Custom Highlights --
-      colors = {}, -- Override default colors
+      colors = {},     -- Override default colors
       highlights = {}, -- Override highlight groups
 
       -- Plugins Config --
       diagnostics = {
-        darker = true, -- darker colors for diagnostic
-        undercurl = true, -- use undercurl instead of underline for diagnostics
+        darker = true,     -- darker colors for diagnostic
+        undercurl = true,  -- use undercurl instead of underline for diagnostics
         background = true, -- use background color for virtual text
       },
     }
@@ -295,12 +360,12 @@ lvim.plugins = {
     "rmagatti/goto-preview",
     config = function()
       require('goto-preview').setup {
-        width = 80, -- Width of the floating window
-        height = 20, -- Height of the floating window
+        width = 80,               -- Width of the floating window
+        height = 20,              -- Height of the floating window
         default_mappings = false, -- Bind default mappings
-        debug = false, -- Print debug information
-        opacity = 0, -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        debug = false,            -- Print debug information
+        opacity = 0,              -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        post_open_hook = nil,     -- A function taking two arguments, a buffer and a window to be ran as a hook.
         resizing_mappings = true, -- Binds arrow keys to resizing the floating window.
         -- You can use "default_mappings = true" setup option
         -- Or explicitly set keybindings
@@ -315,17 +380,19 @@ lvim.plugins = {
   { "npxbr/glow.nvim",           ft = { "markdown" } },
   { 'bluz71/vim-nightfly-colors' },
   { 'haishanh/night-owl.vim' },
-  { 'nacro90/numb.nvim',
+  {
+    'nacro90/numb.nvim',
     config = function()
       require('numb').setup {
-        show_numbers = true, -- Enable 'number' for the window while peeking
-        show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+        show_numbers = true,         -- Enable 'number' for the window while peeking
+        show_cursorline = true,      -- Enable 'cursorline' for the window while peeking
         hide_relativenumbers = true, -- Enable turning off 'relativenumber' for the window while peeking
-        number_only = true, -- Peek only when the command is only a number instead of when it starts with a number
-        centered_peeking = true, -- Peeked line will be centered relative to window
+        number_only = true,          -- Peek only when the command is only a number instead of when it starts with a number
+        centered_peeking = true,     -- Peeked line will be centered relative to window
       }
     end
   },
+  { 'nvim-lua/plenary.nvim' },
   {
     "simrat39/rust-tools.nvim",
     config = function()
@@ -337,7 +404,6 @@ lvim.plugins = {
           -- hover_with_actions = true,
           -- options same as lsp hover / vim.lsp.util.open_floating_preview()
           hover_actions = {
-
             -- the border that is used for the hover window
             -- see vim.api.nvim_open_win()
             border = {
@@ -370,6 +436,14 @@ lvim.plugins = {
             vim.keymap.set("n", "<leader>lA", rt.code_action_group.code_action_group, { buffer = bufnr })
           end,
         },
+        -- debugging stuff
+        dap = {
+          adapter = {
+            type = "executable",
+            command = "lldb-vscode",
+            name = "rt_lldb",
+          },
+        },
       })
     end,
     ft = { "rust", "rs" },
@@ -393,17 +467,22 @@ lvim.plugins = {
             enabled = false,
           },
           hover = {
-            enabled = false
-          }
+            enabled = false,
+          },
         },
         -- you can enable a preset for easier configuration
         presets = {
-          bottom_search = true, -- use a classic bottom cmdline for search
-          command_palette = false, -- position the cmdline and popupmenu together
+          bottom_search = true,         -- use a classic bottom cmdline for search
+          command_palette = false,      -- position the cmdline and popupmenu together
           long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false, -- add a border to hover docs and signature help
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = false,       -- add a border to hover docs and signature help
         },
+        messages = {
+          view_warn = false,
+          view_error = false,
+          view = false,
+        }
       })
     end,
     dependencies = {
