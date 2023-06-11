@@ -29,6 +29,8 @@ lvim.keys.normal_mode["<S-M-l>"] = ":BufferLineMoveNext<CR>"
 lvim.keys.normal_mode["<S-M-h>"] = ":BufferLineMovePrev<CR>"
 lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
 lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
+lvim.keys.normal_mode["j"] = "gj"
+lvim.keys.normal_mode["k"] = "gk"
 
 -- noice
 lvim.keys.normal_mode["<S-Enter>"] = ":"
@@ -210,17 +212,96 @@ formatters.setup({
 lvim.builtin.sell_soul_to_devel = true
 
 lvim.plugins = {
+  { 'nvim-treesitter/nvim-treesitter' },
+  { 'nvim-treesitter/nvim-treesitter-context', require 'treesitter-context'.setup {
+    enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0,            -- How many lines the window should span. Values <= 0 mean no limit.
+    min_window_height = 0,    -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+    line_numbers = true,
+    multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+    trim_scope = 'inner',     -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+    mode = 'cursor',          -- Line used to calculate context. Choices: 'cursor', 'topline'
+    -- Separator between context and content. Should be a single character string, like '-'.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    separator = nil,
+    zindex = 20,     -- The Z-index of the context window
+    on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+  } },
+  { 'JoosepAlviste/palenightfall.nvim' },
+  -- { 'rose-pine/neovim' },
+  { 'rose-pine/neovim', require('rose-pine').setup({
+    disable_italics = true,
+  }) },
   { 'junegunn/goyo.vim' },
+  {
+    "folke/zen-mode.nvim",
+    config = function()
+      require("zen-mode").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  },
+  { 'loctvl842/monokai-pro.nvim' },
+  -- { 'loctvl842/monokai-pro.nvim', require("monokai-pro").setup({
+  --   filter = "spectrum", -- classic | octagon | pro | machine | ristretto | spectrum
+  -- })
+  -- },
   { 'martinsione/darkplus.nvim' },
-  { 'github/copilot.vim' },
+  -- { 'github/copilot.vim' },
   { 'Mofiqul/vscode.nvim' },
   { 'luisiacc/gruvbox-baby' },
+  -- { 'morhetz/gruvbox' },
+  -- { "rebelot/kanagawa.nvim" },
   { "rebelot/kanagawa.nvim", require('kanagawa').setup({
+    undercurl = true,
     transparent = false,
+    keywordStyle = { italic = false },
+    statementStyle = { bold = true },
+    typeStyle = { italic = false, bold = false },
+    functionStyle = { italic = false, bold = false },
+
+    colors = {
+      theme = {
+        wave = {
+          ui = {
+            bg = "#1F1F28",
+          }
+        },
+        all = {
+          ui = {
+            bg_gutter = "none"
+          }
+        }
+      }
+    },
 
     overrides = function(colors)
       local theme = colors.theme
       return {
+        -- More uniform colors for the popup menu.
+        Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+        PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+        PmenuSbar = { bg = theme.ui.bg_m1 },
+        PmenuThumb = { bg = theme.ui.bg_p2 },
+
+        -- This will make floating windows look nicer with default borders.
+        NormalFloat = { bg = "none" },
+        FloatBorder = { bg = "none" },
+        FloatTitle = { bg = "none" },
+
+        -- Save an hlgroup with dark background and dimmed foreground
+        -- so that you can use it where your still want darker windows.
+        -- E.g.: autocmd TermOpen * setlocal winhighlight=Normal:NormalDark
+        NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
+
+        -- Popular plugins that open floats will link to NormalFloat by default;
+        -- set their background accordingly if you wish to keep them dark and borderless
+        LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+        MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+
+        -- Block-like modern Telescope UI
         TelescopeTitle = { fg = theme.ui.special, bold = true },
         TelescopePromptNormal = { bg = theme.ui.bg_p1 },
         TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
@@ -230,7 +311,8 @@ lvim.plugins = {
         TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
       }
     end,
-  }) },
+  })
+  },
   -- {
   --   "gelfand/copilot.vim",
   --   disable = not lvim.builtin.sell_soul_to_devel,
@@ -254,6 +336,8 @@ lvim.plugins = {
   },
   { "Mofiqul/dracula.nvim" },
   { "arcticicestudio/nord-vim" },
+  { 'rmehri01/onenord.nvim' },
+  { 'shaunsingh/nord.nvim' },
   { "folke/lsp-colors.nvim" },
   { 'marko-cerovac/material.nvim' },
   { 'fatih/vim-go' },
@@ -261,34 +345,29 @@ lvim.plugins = {
   { 'catppuccin/nvim' },
   { 'Yazeed1s/oh-lucy.nvim' },
   { 'ghifarit53/daycula-vim' },
-  { 'rose-pine/neovim', require('rose-pine').setup({
-    disable_italics = true,
-    disable_background = false,
-  })
-  },
   { 'safv12/andromeda.vim' },
   { 'nyoom-engineering/oxocarbon.nvim' },
-  { 'arzg/vim-colors-xcode' },
-  { 'kartikp10/noctis.nvim' },
-  { "ellisonleao/gruvbox.nvim",
-    require("gruvbox").setup({
-      undercurl = true,
-      underline = true,
-      bold = true,
-      italic = true,
-      strikethrough = true,
-      invert_selection = false,
-      invert_signs = false,
-      invert_tabline = false,
-      invert_intend_guides = false,
-      inverse = true,    -- invert background for search, diffs, statuslines and errors
-      contrast = "hard", -- can be "hard", "soft" or empty string
-      palette_overrides = {},
-      overrides = {},
-      dim_inactive = false,
-      transparent_mode = false,
-    })
-  },
+  { "ellisonleao/gruvbox.nvim" },
+  -- { "ellisonleao/gruvbox.nvim",
+  --   require("gruvbox").setup({
+  --     undercurl = true,
+  --     underline = true,
+  --     bold = true,
+  --     italic = true,
+  --     strikethrough = true,
+  --     invert_selection = false,
+  --     invert_signs = false,
+  --     invert_tabline = false,
+  --     invert_intend_guides = false,
+  --     inverse = true,    -- invert background for search, diffs, statuslines and errors
+  --     contrast = "hard", -- can be "hard", "soft" or empty string
+  --     palette_overrides = {},
+  --     overrides = {},
+  --     dim_inactive = false,
+  --     transparent_mode = false,
+  --   })
+  -- },
+  -- { 'navarasu/onedark.nvim' },
   { 'navarasu/onedark.nvim',
     require('onedark').setup {
       -- Main options --
