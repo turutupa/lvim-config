@@ -16,6 +16,10 @@ lvim.transparent_window = false
 vim.opt.relativenumber = true
 lvim.builtin.dap.active = true
 
+local theme = require("lualine.themes.tokyonight")
+theme.normal.c.bg = nil
+lvim.builtin.lualine.options.theme = theme
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -212,7 +216,13 @@ formatters.setup({
 lvim.builtin.sell_soul_to_devel = true
 
 lvim.plugins = {
+  { 'sheerun/vim-polyglot' },
+  { "EdenEast/nightfox.nvim" },
+  { 'pineapplegiant/spaceduck' },
+  { 'projekt0n/github-nvim-theme' },
+  { 'Rigellute/shades-of-purple.vim' },
   { 'nvim-treesitter/nvim-treesitter' },
+  -- { 'nvim-treesitter/nvim-treesitter-context' },
   { 'nvim-treesitter/nvim-treesitter-context', require 'treesitter-context'.setup {
     enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0,            -- How many lines the window should span. Values <= 0 mean no limit.
@@ -228,10 +238,10 @@ lvim.plugins = {
     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
   } },
   { 'JoosepAlviste/palenightfall.nvim' },
-  -- { 'rose-pine/neovim' },
-  { 'rose-pine/neovim', require('rose-pine').setup({
-    disable_italics = true,
-  }) },
+  { 'rose-pine/neovim' },
+  -- { 'rose-pine/neovim', require('rose-pine').setup({
+  --   disable_italics = true,
+  -- }) },
   { 'junegunn/goyo.vim' },
   {
     "folke/zen-mode.nvim",
@@ -251,8 +261,9 @@ lvim.plugins = {
   { 'martinsione/darkplus.nvim' },
   -- { 'github/copilot.vim' },
   { 'Mofiqul/vscode.nvim' },
+  { 'sainnhe/gruvbox-material' },
   { 'luisiacc/gruvbox-baby' },
-  -- { 'morhetz/gruvbox' },
+  { 'morhetz/gruvbox' },
   -- { "rebelot/kanagawa.nvim" },
   { "rebelot/kanagawa.nvim", require('kanagawa').setup({
     undercurl = true,
@@ -302,13 +313,13 @@ lvim.plugins = {
         MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
 
         -- Block-like modern Telescope UI
-        TelescopeTitle = { fg = theme.ui.special, bold = true },
-        TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-        TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-        TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-        TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-        TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-        TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+        -- TelescopeTitle = { fg = theme.ui.special, bold = true },
+        -- TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+        -- TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+        -- TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+        -- TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+        -- TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+        -- TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
       }
     end,
   })
@@ -347,13 +358,13 @@ lvim.plugins = {
   { 'ghifarit53/daycula-vim' },
   { 'safv12/andromeda.vim' },
   { 'nyoom-engineering/oxocarbon.nvim' },
-  { "ellisonleao/gruvbox.nvim" },
+  -- { "ellisonleao/gruvbox.nvim" },
   -- { "ellisonleao/gruvbox.nvim",
   --   require("gruvbox").setup({
   --     undercurl = true,
   --     underline = true,
-  --     bold = true,
-  --     italic = true,
+  --     bold = false,
+  --     italic = false,
   --     strikethrough = true,
   --     invert_selection = false,
   --     invert_signs = false,
@@ -367,48 +378,73 @@ lvim.plugins = {
   --     transparent_mode = false,
   --   })
   -- },
+  -- { 'folke/tokyonight.nvim', require('tokyonight').setup({
+  --   -- your configuration comes here
+  --   -- or leave it empty to use the default settings
+  --   style = "night",        -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+  --   light_style = "day",    -- The theme is used when the background is set to light
+  --   transparent = false,    -- Enable this to disable setting the background color
+  --   terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+  --   styles = {
+  --     -- Style to be applied to different syntax groups
+  --     -- Value is any valid attr-list value for `:help nvim_set_hl`
+  --     comments = { italic = true },
+  --     keywords = { italic = true },
+  --     functions = {},
+  --     variables = {},
+  --     -- Background styles. Can be "dark", "transparent" or "normal"
+  --     sidebars = "transparent",       -- style for sidebars, see below
+  --     floats = "transparent",         -- style for floating windows
+  --   },
+  --   sidebars = { "qf", "help" },      -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+  --   day_brightness = 0.3,             -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
+  --   hide_inactive_statusline = false, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
+  --   dim_inactive = false,             -- dims inactive windows
+  --   lualine_bold = false,             -- When `true`, section headers in the lualine theme will be bold
+  -- })
+  -- },
   -- { 'navarasu/onedark.nvim' },
-  { 'navarasu/onedark.nvim',
-    require('onedark').setup {
-      -- Main options --
-      style = 'deep',               -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      transparent = false,          -- Show/hide background
-      term_colors = false,          -- Change terminal color as per the selected theme style
-      ending_tildes = false,        -- Show the end-of-buffer tildes. By default they are hidden
-      cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
+  -- { 'navarasu/onedark.nvim',
+  --   require('onedark').setup {
+  --     -- Main options --
+  --     style = 'deep',               -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+  --     transparent = false,          -- Show/hide background
+  --     term_colors = false,          -- Change terminal color as per the selected theme style
+  --     ending_tildes = false,        -- Show the end-of-buffer tildes. By default they are hidden
+  --     cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
 
-      -- toggle theme style ---
-      toggle_style_key = nil,                                                              -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
-      toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+  --     -- toggle theme style ---
+  --     toggle_style_key = nil,                                                              -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+  --     toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
 
-      -- Change code style ---
-      -- Options are italic, bold, underline, none
-      -- You can configure multiple style with comma seperated, For e.g., keywords = 'italic,bold'
-      code_style = {
-        comments = 'none',
-        keywords = 'none',
-        functions = 'none',
-        strings = 'none',
-        variables = 'none'
-      },
+  --     -- Change code style ---
+  --     -- Options are italic, bold, underline, none
+  --     -- You can configure multiple style with comma seperated, For e.g., keywords = 'italic,bold'
+  --     code_style = {
+  --       comments = 'none',
+  --       keywords = 'none',
+  --       functions = 'none',
+  --       strings = 'none',
+  --       variables = 'none'
+  --     },
 
-      -- Lualine options --
-      lualine = {
-        transparent = true, -- lualine center bar transparency
-      },
+  --     -- Lualine options --
+  --     lualine = {
+  --       transparent = true, -- lualine center bar transparency
+  --     },
 
-      -- Custom Highlights --
-      colors = {},     -- Override default colors
-      highlights = {}, -- Override highlight groups
+  --     -- Custom Highlights --
+  --     colors = {},     -- Override default colors
+  --     highlights = {}, -- Override highlight groups
 
-      -- Plugins Config --
-      diagnostics = {
-        darker = true,     -- darker colors for diagnostic
-        undercurl = true,  -- use undercurl instead of underline for diagnostics
-        background = true, -- use background color for virtual text
-      },
-    }
-  },
+  --     -- Plugins Config --
+  --     diagnostics = {
+  --       darker = true,     -- darker colors for diagnostic
+  --       undercurl = true,  -- use undercurl instead of underline for diagnostics
+  --       background = true, -- use background color for virtual text
+  --     },
+  --   }
+  -- },
   {
     "kevinhwang91/nvim-bqf",
     event = { "BufRead", "BufNew" },
