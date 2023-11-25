@@ -10,15 +10,21 @@ an executable
 
 -- general
 lvim.log.level = "warn"
-lvim.colorscheme = "kanagawa"
+lvim.colorscheme = "catppuccin"
 lvim.format_on_save = true
-lvim.transparent_window = false
+lvim.transparent_window = true
 vim.opt.relativenumber = true
 lvim.builtin.dap.active = true
 
 local theme = require("lualine.themes.tokyonight")
 theme.normal.c.bg = nil
 lvim.builtin.lualine.options.theme = theme
+
+lvim.builtin.nvimtree.setup.view.adaptive_size = true
+
+-- vim.cmd [[set runtimepath+=~/Projects/spaceduck]]
+-- vim.cmd [[colorscheme spaceduck]]
+
 
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
@@ -37,7 +43,7 @@ lvim.keys.normal_mode["j"] = "gj"
 lvim.keys.normal_mode["k"] = "gk"
 
 -- noice
-lvim.keys.normal_mode["<S-Enter>"] = ":"
+-- lvim.keys.normal_mode["<S-Enter>"] = ":"
 --  { desc = "Redirect Cmdline" })
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
@@ -129,7 +135,7 @@ lvim.builtin.treesitter.highlight.enable = true
 
 -- -- make sure server will always be installed even if the server is in skipped_servers list
 lvim.lsp.installer.setup.ensure_installed = {
-  "sumneko_lua",
+  "lua_ls",
   "jsonls",
 }
 -- -- change UI setting of `LspInstallInfo`
@@ -165,6 +171,36 @@ lvim.lsp.installer.setup.ensure_installed = {
 --   --Enable completion triggered by <c-x><c-o>
 --   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- end
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { name = "black" },
+  {
+    name = "prettier",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespace
+    -- options such as `--line-width 80` become either `{"--line-width", "80"}` or `{"--line-width=80"}`
+    args = { "--print-width", "100", "--single-quote", "true" },
+    ---@usage only start in these filetypes, by default it will attach to all filetypes it supports
+    filetypes = { "typescript", "typescriptreact" },
+  },
+}
+
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { name = "flake8" },
+  {
+    name = "shellcheck",
+    args = { "--severity", "warning" },
+  },
+}
+
+local code_actions = require "lvim.lsp.null-ls.code_actions"
+code_actions.setup {
+  {
+    name = "proselint",
+  },
+}
 
 -- -- set a formatter, this will override the language server formatting capabilities (if it exists)
 -- local formatters = require "lvim.lsp.null-ls.formatters"
@@ -218,7 +254,6 @@ lvim.builtin.sell_soul_to_devel = true
 lvim.plugins = {
   { 'sheerun/vim-polyglot' },
   { "EdenEast/nightfox.nvim" },
-  { 'pineapplegiant/spaceduck' },
   { 'projekt0n/github-nvim-theme' },
   { 'Rigellute/shades-of-purple.vim' },
   { 'nvim-treesitter/nvim-treesitter' },
@@ -566,49 +601,49 @@ lvim.plugins = {
   {
     "stevearc/dressing.nvim"
   },
-  {
-    "folke/noice.nvim",
-    config = function()
-      require("noice").setup({
-        -- add any options here
-        lsp = {
-          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-          -- override = {
-          --   ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          --   ["vim.lsp.util.stylize_markdown"] = true,
-          --   ["cmp.entry.get_documentation"] = true,
-          -- },
-          signature = {
-            enabled = false,
-          },
-          hover = {
-            enabled = false,
-          },
-        },
-        -- you can enable a preset for easier configuration
-        presets = {
-          bottom_search = true,         -- use a classic bottom cmdline for search
-          command_palette = false,      -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false,       -- add a border to hover docs and signature help
-        },
-        messages = {
-          view_warn = false,
-          view_error = false,
-          view = false,
-        }
-      })
-    end,
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      -- "rcarriga/nvim-notify",
-    }
-  }
+  -- {
+  --   "folke/noice.nvim",
+  --   config = function()
+  --     require("noice").setup({
+  --       -- add any options here
+  --       lsp = {
+  --         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+  --         -- override = {
+  --         --   ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+  --         --   ["vim.lsp.util.stylize_markdown"] = true,
+  --         --   ["cmp.entry.get_documentation"] = true,
+  --         -- },
+  --         signature = {
+  --           enabled = false,
+  --         },
+  --         hover = {
+  --           enabled = false,
+  --         },
+  --       },
+  --       -- you can enable a preset for easier configuration
+  --       presets = {
+  --         bottom_search = true,         -- use a classic bottom cmdline for search
+  --         command_palette = false,      -- position the cmdline and popupmenu together
+  --         long_message_to_split = true, -- long messages will be sent to a split
+  --         inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+  --         lsp_doc_border = false,       -- add a border to hover docs and signature help
+  --       },
+  --       messages = {
+  --         view_warn = false,
+  --         view_error = false,
+  --         view = false,
+  --       }
+  --     })
+  --   end,
+  --   dependencies = {
+  --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+  --     "MunifTanjim/nui.nvim",
+  --     -- OPTIONAL:
+  --     --   `nvim-notify` is only needed, if you want to use the notification view.
+  --     --   If not available, we use `mini` as the fallback
+  --     -- "rcarriga/nvim-notify",
+  --   }
+  -- }
   -- { 'karb94/neoscroll.nvim',
   --   config = function()
   --     require('neoscroll').setup({
